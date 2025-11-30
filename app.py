@@ -44,7 +44,7 @@ import joblib
 
 warnings.filterwarnings('ignore')
 
-print("✅ All libraries loaded successfully!")
+st.write("✅ All libraries loaded successfully!")
 
 """---
 
@@ -59,15 +59,15 @@ df_cases = pd.read_csv(cases_url)
 hearings_url = 'https://drive.google.com/uc?id=12PgUYlxXEVHinwjdAkb7ISOndL2oVWPg'
 df_hearings = pd.read_csv(hearings_url)
 
-print(f"📁 Cases Dataset: {df_cases.shape[0]:,} rows × {df_cases.shape[1]} columns")
-print(f"📁 Hearings Dataset: {df_hearings.shape[0]:,} rows × {df_hearings.shape[1]} columns")
+st.write(f"📁 Cases Dataset: {df_cases.shape[0]:,} rows × {df_cases.shape[1]} columns")
+st.write(f"📁 Hearings Dataset: {df_hearings.shape[0]:,} rows × {df_hearings.shape[1]} columns")
 
 # Display first few rows
-print("\n🔍 Cases Data Preview:")
-display(df_cases.head())
+st.write("\n🔍 Cases Data Preview:")
+st.dataframe(df_cases.head())
 
-print("\n🔍 Hearings Data Preview:")
-display(df_hearings.head())
+st.write("\n🔍 Hearings Data Preview:")
+st.dataframe(df_hearings.head())
 
 """---
 
@@ -115,9 +115,9 @@ df_cases['NATURE_OF_DISPOSAL_OUTCOME'] = df_cases['NATURE_OF_DISPOSAL_OUTCOME'].
 # Add risk flag for long pending cases
 df_cases['HIGH_DELAY_RISK'] = df_cases['DISPOSALTIME_ADJ'] > 730  # > 2 years
 
-print("✅ Data cleaning complete!")
-print(f"\n📊 Date range: {df_cases['DATE_FILED'].min()} to {df_cases['DECISION_DATE'].max()}")
-print(f"⏱️ Average disposal time: {df_cases['DISPOSALTIME_ADJ'].mean():.0f} days ({df_cases['DISPOSALTIME_ADJ'].mean()/365:.1f} years)")
+st.write("✅ Data cleaning complete!")
+st.write(f"\n📊 Date range: {df_cases['DATE_FILED'].min()} to {df_cases['DECISION_DATE'].max()}")
+st.write(f"⏱️ Average disposal time: {df_cases['DISPOSALTIME_ADJ'].mean():.0f} days ({df_cases['DISPOSALTIME_ADJ'].mean()/365:.1f} years)")
 
 """---
 
@@ -200,11 +200,11 @@ fig.update_layout(
 
 fig.show()
 
-print(f"\n📌 Key Insights:")
-print(f"   • {pct_over_1yr:.1f}% of cases took more than 1 year to dispose")
-print(f"   • {(cases_over_2yr/total_cases)*100:.1f}% of cases took more than 2 years")
-print(f"   • Fastest case: {df_cases['DISPOSALTIME_ADJ'].min()} days")
-print(f"   • Longest case: {df_cases['DISPOSALTIME_ADJ'].max()} days ({df_cases['DISPOSALTIME_ADJ'].max()/365:.1f} years)")
+st.write(f"\n📌 Key Insights:")
+st.write(f"   • {pct_over_1yr:.1f}% of cases took more than 1 year to dispose")
+st.write(f"   • {(cases_over_2yr/total_cases)*100:.1f}% of cases took more than 2 years")
+st.write(f"   • Fastest case: {df_cases['DISPOSALTIME_ADJ'].min()} days")
+st.write(f"   • Longest case: {df_cases['DISPOSALTIME_ADJ'].max()} days ({df_cases['DISPOSALTIME_ADJ'].max()/365:.1f} years)")
 
 """---
 
@@ -242,10 +242,10 @@ fig.update_layout(
 
 fig.show()
 
-print(f"\n🔍 Stage Analysis:")
-print(f"   • {stage_counts.get('ADMISSION', 0):,} hearings at ADMISSION stage ({stage_counts.get('ADMISSION', 0)/len(df_hearings)*100:.1f}%)")
-print(f"   • {stage_counts.get('ORDERS / JUDGMENT', 0):,} hearings at ORDERS/JUDGMENT stage")
-print(f"   • {stage_counts.get('DISPOSED', 0):,} final disposals recorded in hearings")
+st.write(f"\n🔍 Stage Analysis:")
+st.write(f"   • {stage_counts.get('ADMISSION', 0):,} hearings at ADMISSION stage ({stage_counts.get('ADMISSION', 0)/len(df_hearings)*100:.1f}%)")
+st.write(f"   • {stage_counts.get('ORDERS / JUDGMENT', 0):,} hearings at ORDERS/JUDGMENT stage")
+st.write(f"   • {stage_counts.get('DISPOSED', 0):,} final disposals recorded in hearings")
 
 """---
 
@@ -296,9 +296,9 @@ fig.update_layout(
 
 fig.show()
 
-print(f"\n⚠️ Bottleneck Insights:")
+st.write(f"\n⚠️ Bottleneck Insights:")
 for idx, row in stage_duration.head(3).iterrows():
-    print(f"   • {row['Remappedstages']}: Avg {row['mean']:.0f} days, {row['count']:.0f} hearings")
+    st.write(f"   • {row['Remappedstages']}: Avg {row['mean']:.0f} days, {row['count']:.0f} hearings")
 
 """---
 
@@ -334,9 +334,9 @@ high_risk_cases = df_cases[df_cases['HIGH_DELAY_RISK'] == True][
 
 high_risk_cases['DISPOSALTIME_YEARS'] = (high_risk_cases['DISPOSALTIME_ADJ'] / 365).round(1)
 
-print(f"\n🚨 HIGH PRIORITY ALERTS: {(df_cases['HIGH_DELAY_RISK'] == True).sum()} cases took > 2 years")
-print("\nTop 20 Longest Cases:")
-display(high_risk_cases[['COMBINED_CASE_NUMBER', 'DATE_FILED', 'DECISION_DATE',
+st.write(f"\n🚨 HIGH PRIORITY ALERTS: {(df_cases['HIGH_DELAY_RISK'] == True).sum()} cases took > 2 years")
+st.write("\nTop 20 Longest Cases:")
+st.dataframe(high_risk_cases[['COMBINED_CASE_NUMBER', 'DATE_FILED', 'DECISION_DATE',
                          'DISPOSALTIME_YEARS', 'COURT_NUMBER', 'NATURE_OF_DISPOSAL_OUTCOME']])
 
 """---
@@ -395,9 +395,9 @@ fig.show()
 monthly_trends['Backlog'] = monthly_trends['Filed'] - monthly_trends['Disposed']
 backlog_periods = monthly_trends[monthly_trends['Backlog'] > 0].sort_values('Backlog', ascending=False).head(5)
 
-print(f"\n📊 Backlog Insights:")
-print(f"   • Peak backlog month: {backlog_periods.iloc[0]['Month_Str']} (+{backlog_periods.iloc[0]['Backlog']:.0f} cases)")
-print(f"   • Total months with filing > disposal: {(monthly_trends['Backlog'] > 0).sum()}")
+st.write(f"\n📊 Backlog Insights:")
+st.write(f"   • Peak backlog month: {backlog_periods.iloc[0]['Month_Str']} (+{backlog_periods.iloc[0]['Backlog']:.0f} cases)")
+st.write(f"   • Total months with filing > disposal: {(monthly_trends['Backlog'] > 0).sum()}")
 
 """---
 
@@ -415,7 +415,7 @@ court_dist = df_cases['COURT_NUMBER'].value_counts().head(10).reset_index()
 court_dist.columns = ['Court', 'Cases']
 
 # Use Matplotlib for the bar chart
-print("### Top 10 Courts by Case Volume (Matplotlib):")
+st.write("### Top 10 Courts by Case Volume (Matplotlib):")
 if not court_dist.empty:
     plt.figure(figsize=(12, 7))
     plt.bar(court_dist['Court'].astype(str), court_dist['Cases'], color='skyblue')
@@ -426,7 +426,7 @@ if not court_dist.empty:
     plt.tight_layout()
     plt.show()
 else:
-    print("No court distribution data available to display with Matplotlib.")
+    st.write("No court distribution data available to display with Matplotlib.")
 
 # Acts distribution (clean the data first) - still using Plotly
 acts_clean = df_cases[df_cases['UNDER_ACTS'].notna() & (df_cases['UNDER_ACTS'] != 'NA')]
@@ -444,7 +444,7 @@ if len(acts_clean) > 0:
     fig.update_layout(height=500, title_font_size=20)
     fig.show()
 else:
-    print("No legal acts data available to display.")
+    st.write("No legal acts data available to display.")
 
 """---
 
@@ -455,7 +455,7 @@ else:
 ####10(a). Logistic Learninig (Initial)
 """
 
-print("🤖 Building Logistic Machine Learning Model...")
+st.write("🤖 Building Logistic Machine Learning Model...")
 
 # Prepare features
 ml_data = df_cases[['FILING_YEAR', 'COURT_NUMBER', 'UNDER_ACTS', 'HIGH_DELAY_RISK']].copy()
@@ -485,10 +485,10 @@ model.fit(X_train, y_train)
 y_pred = model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
 
-print(f"\n✅ Model trained successfully!")
-print(f"📊 Model Accuracy: {accuracy*100:.2f}%")
-print("\n📋 Classification Report:")
-print(classification_report(y_test, y_pred, target_names=['Normal (<2 yrs)', 'High Risk (>2 yrs)']))
+st.write(f"\n✅ Model trained successfully!")
+st.write(f"📊 Model Accuracy: {accuracy*100:.2f}%")
+st.write("\n📋 Classification Report:")
+st.write(classification_report(y_test, y_pred, target_names=['Normal (<2 yrs)', 'High Risk (>2 yrs)']))
 
 # Feature importance
 feature_importance = pd.DataFrame({
@@ -525,14 +525,14 @@ fig = px.imshow(
 fig.update_layout(height=400, title_font_size=20)
 fig.show()
 
-print(f"\n💡 Model Insights:")
-print(f"   • The model can predict delay risk with {accuracy*100:.1f}% accuracy")
-print(f"   • Most important factor: {feature_importance.iloc[0]['Feature']}")
-print(f"   • This can help prioritize cases likely to face delays")
+st.write(f"\n💡 Model Insights:")
+st.write(f"   • The model can predict delay risk with {accuracy*100:.1f}% accuracy")
+st.write(f"   • Most important factor: {feature_importance.iloc[0]['Feature']}")
+st.write(f"   • This can help prioritize cases likely to face delays")
 
 """####10(b). Logistic Learninig (Final)"""
 
-print("🤖 Implementing Final Improved Logistic Regression Model...")
+st.write("🤖 Implementing Final Improved Logistic Regression Model...")
 
 # --- Start of added code to create interaction features ---
 from sklearn.preprocessing import PolynomialFeatures
@@ -552,8 +552,8 @@ X_test_interact = pd.DataFrame(poly.transform(X_test),
                                columns=poly.get_feature_names_out(X_test.columns),
                                index=X_test.index)
 
-print(f"✅ Interaction features created. X_train_interact shape: {X_train_interact.shape}")
-print(f"✅ Interaction features created. X_test_interact shape: {X_test_interact.shape}")
+st.write(f"✅ Interaction features created. X_train_interact shape: {X_train_interact.shape}")
+st.write(f"✅ Interaction features created. X_test_interact shape: {X_test_interact.shape}")
 # --- End of added code ---
 
 # Initialize Logistic Regression model with class_weight='balanced'
@@ -566,10 +566,10 @@ model_balanced_final_lr.fit(X_train_interact, y_train)
 y_pred_balanced_final_lr = model_balanced_final_lr.predict(X_test_interact)
 accuracy_balanced_final_lr = accuracy_score(y_test, y_pred_balanced_final_lr)
 
-print(f"\n✅ Final Logistic Regression Model trained successfully!")
-print(f"📊 Model Accuracy (LR with interactions & balanced weight): {accuracy_balanced_final_lr*100:.2f}%")
-print("\n📋 Classification Report (LR with interactions & balanced weight):")
-print(classification_report(y_test, y_pred_balanced_final_lr, target_names=['Normal (<2 yrs)', 'High Risk (>2 yrs)']))
+st.write(f"\n✅ Final Logistic Regression Model trained successfully!")
+st.write(f"📊 Model Accuracy (LR with interactions & balanced weight): {accuracy_balanced_final_lr*100:.2f}%")
+st.write("\n📋 Classification Report (LR with interactions & balanced weight):")
+st.write(classification_report(y_test, y_pred_balanced_final_lr, target_names=['Normal (<2 yrs)', 'High Risk (>2 yrs)']))
 
 # Confusion matrix
 cm_balanced_final_lr = confusion_matrix(y_test, y_pred_balanced_final_lr)
@@ -608,7 +608,7 @@ fig_feat_imp_lr.show()
 
 """####10(c). Decision Tree (Initial)"""
 
-print("🤖 Building Decision Tree Machine Learning Model...")
+st.write("🤖 Building Decision Tree Machine Learning Model...")
 
 from sklearn.tree import DecisionTreeClassifier
 
@@ -623,10 +623,10 @@ dtc_model.fit(X_train, y_train)
 y_pred_dtc = dtc_model.predict(X_test)
 accuracy_dtc = accuracy_score(y_test, y_pred_dtc)
 
-print(f"\n✅ Decision Tree model trained successfully!")
-print(f"📊 Decision Tree Model Accuracy: {accuracy_dtc*100:.2f}%")
-print("\n📋 Decision Tree Classification Report:")
-print(classification_report(y_test, y_pred_dtc, target_names=['Normal (<2 yrs)', 'High Risk (>2 yrs)']))
+st.write(f"\n✅ Decision Tree model trained successfully!")
+st.write(f"📊 Decision Tree Model Accuracy: {accuracy_dtc*100:.2f}%")
+st.write("\n📋 Decision Tree Classification Report:")
+st.write(classification_report(y_test, y_pred_dtc, target_names=['Normal (<2 yrs)', 'High Risk (>2 yrs)']))
 
 # Feature importance for Decision Tree
 feature_importance_dtc = pd.DataFrame({
@@ -663,14 +663,14 @@ fig_dtc_cm = px.imshow(
 fig_dtc_cm.update_layout(height=400, title_font_size=20)
 fig_dtc_cm.show()
 
-print(f"\n💡 Decision Tree Model Insights:")
-print(f"   • The Decision Tree model predicts delay risk with {accuracy_dtc*100:.1f}% accuracy")
-print(f"   • Most important factor: {feature_importance_dtc.iloc[0]['Feature']}")
-print(f"   • Decision Trees can capture non-linear relationships in data")
+st.write(f"\n💡 Decision Tree Model Insights:")
+st.write(f"   • The Decision Tree model predicts delay risk with {accuracy_dtc*100:.1f}% accuracy")
+st.write(f"   • Most important factor: {feature_importance_dtc.iloc[0]['Feature']}")
+st.write(f"   • Decision Trees can capture non-linear relationships in data")
 
 """####10(d). Decision Tree (Final)"""
 
-print("🤖 Implementing Final Improved Decision Tree Model...")
+st.write("🤖 Implementing Final Improved Decision Tree Model...")
 
 # Initialize Decision Tree model with class_weight='balanced'
 dt_model_balanced_final = DecisionTreeClassifier(random_state=42, class_weight='balanced')
@@ -703,10 +703,10 @@ best_dt_model_final = grid_search_final.best_estimator_
 y_pred_best_dt_final = best_dt_model_final.predict(X_test_interact)
 accuracy_best_dt_final = accuracy_score(y_test, y_pred_best_dt_final)
 
-print(f"\n✅ Best Decision Tree Model trained successfully!\nBest parameters: {grid_search_final.best_params_}")
-print(f"📊 Best Decision Tree Model Accuracy (with interactions & balanced weight): {accuracy_best_dt_final*100:.2f}%")
-print("\n📋 Classification Report (Best Decision Tree with interactions & balanced weight):")
-print(classification_report(y_test, y_pred_best_dt_final, target_names=['Normal (<2 yrs)', 'High Risk (>2 yrs)']))
+st.write(f"\n✅ Best Decision Tree Model trained successfully!\nBest parameters: {grid_search_final.best_params_}")
+st.write(f"📊 Best Decision Tree Model Accuracy (with interactions & balanced weight): {accuracy_best_dt_final*100:.2f}%")
+st.write("\n📋 Classification Report (Best Decision Tree with interactions & balanced weight):")
+st.write(classification_report(y_test, y_pred_best_dt_final, target_names=['Normal (<2 yrs)', 'High Risk (>2 yrs)']))
 
 # Confusion matrix for the best Decision Tree
 cm_best_dt_final = confusion_matrix(y_test, y_pred_best_dt_final)
@@ -779,9 +779,9 @@ fig_dt_feat_imp_final.show()
 **Data Source:** Karnataka High Court (2015-2019, MFA Cases)
 """
 
-print("\n" + "="*80)
-print("✅ DASHBOARD GENERATION COMPLETE!")
-print("="*80)
+st.write("\n" + "="*80)
+st.write("✅ DASHBOARD GENERATION COMPLETE!")
+st.write("="*80)
 
 """### Additional Notes
 
@@ -927,5 +927,5 @@ While the Logistic Regression had higher recall, indicating it caught more of th
 """
 
 # @title
-print("Thank You")
+st.write("Thank You")
 
