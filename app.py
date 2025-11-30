@@ -17,10 +17,6 @@ Original file is located at
 ## 📦 1. Setup & Installation
 """
 
-# Install required packages
-!pip install plotly kaleido scikit-learn --quiet
-!pip install streamlit -q
-
 
 # Import libraries
 import pandas as pd
